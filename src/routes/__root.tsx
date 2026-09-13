@@ -14,7 +14,7 @@ export const Route = createRootRoute({
       {
         name: 'description',
         content:
-          'Self-study practice book for England GCSE Maths 9–1. Theory, practice, chapter tests and Group mock A. Progress saved locally.',
+          'Self-study practice book for England GCSE Maths 9–1. Theory, practice, chapter tests and timed mocks. Progress saved locally.',
       },
     ],
     links: [

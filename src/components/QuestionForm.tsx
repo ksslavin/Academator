@@ -24,6 +24,7 @@ export function QuestionPrompt({
         ) : null}
         <Pill>{question.marks} mark{question.marks === 1 ? '' : 's'}</Pill>
         {question.tier !== 'both' ? <Pill tone={question.tier === 'H' ? 'h' : 'f'}>{question.tier}</Pill> : null}
+        {question.ao ? <Pill tone="muted">AO{question.ao}</Pill> : null}
         <Pill tone="muted">{question.skill}</Pill>
       </div>
       <div className="text-lg leading-relaxed text-slate-900">

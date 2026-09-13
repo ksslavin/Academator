@@ -86,10 +86,10 @@ function Home() {
           </p>
           {nextTest && 'mock' in nextTest ? (
             <>
-              <h2 className="mt-1 font-serif text-2xl">Group mock A</h2>
+              <h2 className="mt-1 font-serif text-2xl">{nextTest.title}</h2>
               <p className="mt-1 text-sm text-slate-600">{nextTest.reason}</p>
-              <Link to="/mocks/group-a" className="mt-4 inline-flex">
-                <PrimaryButton>Sit Group mock A</PrimaryButton>
+              <Link to="/mocks/$mockId" params={{ mockId: nextTest.mock }} className="mt-4 inline-flex">
+                <PrimaryButton>Sit {nextTest.title}</PrimaryButton>
               </Link>
             </>
           ) : nextTest ? (

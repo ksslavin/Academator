@@ -4,7 +4,7 @@ Self-study web app for **England GCSE Maths 9–1** shared content (AQA / Edexce
 
 The study pattern is short chapter → theory → worked example → practice → timed test. All theory and questions in this repo are original. The app does not host past papers and does not use Bond, CGP, Collins, Pearson, or exam-board wording.
 
-Progress is stored in the browser (`localStorage`). There are no accounts in Phase A.
+Progress is stored in the browser (`localStorage`). There are no accounts.
 
 ## Run
 
@@ -39,11 +39,31 @@ npm run preview
 
 Each live chapter has **Theory · Practice · Test** tabs. Practice marks instantly and shows a full solution. The chapter test is about 20 minutes, marked on submit, then shows marks, percent, grade band (1–3 / 4–5 / 6–7 / 8–9), skill breakdown, and a link back to theory.
 
-**Group mock A** — Number focus (chapters 1–8), about 45 minutes / ~40 marks. Other mocks (Year 11, November, March, full GCSE) are stubs.
-
-**Progress** — 30-chapter heatmap plus mock history. **Formula sheet** is always available from the header and `/formulas`.
+**Progress** — 30-chapter heatmap plus mock history. **Formula sheet** is always available from the header, `/formulas`, and inside a timed paper.
 
 Higher-only items are tagged `H` and hidden on Foundation.
+
+## Phase C — exam engine
+
+The mocks hub is live. Each mock is sat as a **sequence of timed papers**. After the last paper you get a study grade-band estimate (1–3 / 4–5 / 6–7 / 8–9) and a question-by-question review (your answer, correct answer, solution). Sits are stored in local mock history.
+
+| Mock | Shape | Coverage |
+| --- | --- | --- |
+| Group mock A | 1 × 45 min | Number, chapters 1–8 (from Phase A) |
+| Year 10 mock | 2 × 60 min | Core chapters 1–23 (Foundation + intro Higher) |
+| November mock | 3 × 90 min | Almost full spec (Y11 autumn) |
+| March mock | 3 × 90 min | Full 30-chapter spec (Y11 spring) |
+| Full GCSE mock | 3 × 90 min | Entire spec, filtered to the user's F/H tier |
+
+Paper rules match AQA/Edexcel shape:
+
+- **Paper 1** — non-calculator. Formula sheet only; the in-app calculator is hidden.
+- **Papers 2 and 3** — calculator allowed (in-app 4-function + square root).
+- Real countdown per paper, with **pause** and **submit**. Later papers stay locked until the previous paper is submitted.
+
+Questions are **original** exam-style items tagged to topics/chapters. Papers are slightly thinner than a real board paper but sit-able, with an AO mix in the region of 50/25/25 Foundation or 40/30/30 Higher. They are not past papers and not official grade boundaries.
+
+Exam content lives under `src/content/exams/`.
 
 ## Adding a chapter
 
@@ -55,9 +75,9 @@ Structured content lives under `src/content/` so later waves do not rebuild the 
 
 Question helpers are in `src/content/make.ts` (`numeric`, `mc`, `multi`). Use `$...$` for KaTeX.
 
-## Not in Phase A
+## Not in this phase
 
-Accounts / auth, AI question generation, past papers, teacher markbooks, and full Year / November / March / Full GCSE mock bodies.
+Accounts / auth, AI-generated unmarked questions, hosting past-paper PDFs, Wave 2–4 full chapter theory/practice bodies (Phase D), and exact official grade boundaries.
 
 ## Stack
 
