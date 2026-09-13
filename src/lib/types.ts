@@ -62,6 +62,8 @@ export type QuestionPart = {
   solution: string[]
 }
 
+export type CalculatorMode = 'calc' | 'non-calc'
+
 export type Question = {
   id: string
   prompt: string
@@ -71,6 +73,8 @@ export type Question = {
   spec?: AnswerSpec
   parts?: QuestionPart[]
   solution?: string[]
+  hints?: string[]
+  calculator?: CalculatorMode
 }
 
 export type ChapterContent = {
@@ -113,6 +117,7 @@ export type AttemptResult = {
   band: GradeBand
   durationSeconds: number
   skills: Record<string, { marks: number; total: number }>
+  answers?: Record<string, string>
   questionResults: Array<{
     questionId: string
     marksAwarded: number
@@ -120,6 +125,16 @@ export type AttemptResult = {
     correct: boolean
     parts?: MarkedPart[]
   }>
+}
+
+export type WeakQueueItem = {
+  key: string
+  chapterId: number | null
+  questionId: string
+  skill: string
+  source: 'practice' | 'test' | 'mock'
+  mockId?: string
+  at: string
 }
 
 export type GradeBand = '1–3' | '4–5' | '6–7' | '8–9'
@@ -144,6 +159,7 @@ export type ProgressState = {
   lastPath: string | null
   chapters: Record<string, ChapterProgress>
   mocks: MockHistoryItem[]
+  weakQueue: WeakQueueItem[]
   mockDraft?: {
     mockId: string
     startedAt: number

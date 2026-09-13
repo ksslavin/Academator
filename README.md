@@ -4,7 +4,7 @@ Self-study web app for **England GCSE Maths 9–1** shared content (AQA / Edexce
 
 The study pattern is short chapter → theory → worked example → practice → timed test. All theory and questions in this repo are original. The app does not host past papers and does not use Bond, CGP, Collins, Pearson, or exam-board wording.
 
-Progress is stored in the browser (`localStorage`). There are no accounts in Phase A.
+Progress is stored in the browser (`localStorage`). There are no accounts.
 
 ## Run
 
@@ -37,13 +37,27 @@ npm run preview
 | 11 | Linear equations | 2 Algebra |
 | 17 | Ratio and sharing | 3 Ratio |
 
-Each live chapter has **Theory · Practice · Test** tabs. Practice marks instantly and shows a full solution. The chapter test is about 20 minutes, marked on submit, then shows marks, percent, grade band (1–3 / 4–5 / 6–7 / 8–9), skill breakdown, and a link back to theory.
+Each live chapter has **Theory · Practice · Test · Review** tabs. Practice marks instantly. The chapter test is about 20 minutes, marked on submit, then shows marks, percent, grade band (1–3 / 4–5 / 6–7 / 8–9), skill breakdown, and a link back to theory.
 
 **Group mock A** — Number focus (chapters 1–8), about 45 minutes / ~40 marks. Other mocks (Year 11, November, March, full GCSE) are stubs.
 
 **Progress** — 30-chapter heatmap plus mock history. **Formula sheet** is always available from the header and `/formulas`.
 
 Higher-only items are tagged `H` and hidden on Foundation.
+
+## Phase B — study engine
+
+**Hints** — optional progressive hints on practice questions. Hidden during timed tests and mocks until you submit.
+
+**Show step** — reveal the next worked-solution line in practice without dumping the full answer at once.
+
+**Calculator / non-calculator** — every question shows a clear flag. Most Wave 1 items are non-calculator. Compound-interest items are calculator and their solutions say so.
+
+**Retry** — after a practice mark, **Try again** clears the attempt. Hints stay available.
+
+**Weak-topic queue** — missed practice, test and mock items collect on Home and Progress as **Revise these next**. A later correct answer removes the item.
+
+**Review mode** — after practice, a chapter test, or Group mock A, review only the wrong answers with your response, the correct answer and the full solution. Use **Print review** (print CSS; no PDF export).
 
 ## Adding a chapter
 
@@ -53,11 +67,11 @@ Structured content lives under `src/content/` so later waves do not rebuild the 
 2. Write `src/content/chapters/chXX-title.ts` exporting a `ChapterContent` object.
 3. Register it in `src/content/index.ts`.
 
-Question helpers are in `src/content/make.ts` (`numeric`, `mc`, `multi`). Use `$...$` for KaTeX.
+Question helpers are in `src/content/make.ts` (`numeric`, `mc`, `multi`). Optional `hints` and `calculator: 'calc' | 'non-calc'` attach to any question. Skill-level fallback hints live in `src/lib/study.ts`. Use `$...$` for KaTeX.
 
-## Not in Phase A
+## Not in this release
 
-Accounts / auth, AI question generation, past papers, teacher markbooks, and full Year / November / March / Full GCSE mock bodies.
+Accounts / auth, AI question generation, past papers, teacher markbooks, Phase C year mocks / full 3-paper exam engine, and Wave 2–4 chapter bodies.
 
 ## Stack
 

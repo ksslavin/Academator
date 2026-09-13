@@ -196,6 +196,11 @@ export const groupMockA: MockPaper = {
       tier: 'H',
       prompt: '£1500 is invested at $4\\%$ compound interest for 2 years. What is the value after 2 years, in pounds?',
       marks: 3,
+      calculator: 'calc',
+      hints: [
+        'Use $\\times 1.04^2$ for two years of compound interest.',
+        'A calculator is appropriate for $1.04^2$, then multiply by 1500.',
+      ],
       answer: '1622.4',
       accepted: ['1622.40'],
       tolerance: 0.01,

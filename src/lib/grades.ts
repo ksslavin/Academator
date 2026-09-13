@@ -45,6 +45,7 @@ export function buildAttempt(options: {
     band: gradeBand(percent),
     durationSeconds: Math.max(0, Math.round((endedAt - options.startedAt) / 1000)),
     skills,
+    answers: options.answers,
     questionResults,
   }
 }

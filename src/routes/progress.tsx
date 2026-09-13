@@ -2,6 +2,7 @@ import { Link, createFileRoute } from '@tanstack/react-router'
 import { CHAPTERS } from '../content/catalog'
 import { getLiveChapter } from '../content'
 import { useProgress } from '../components/ProgressProvider'
+import { WeakQueueCard } from '../components/WeakQueue'
 import { Bar, Card, Pill, SecondaryButton } from '../components/ui'
 import { STORAGE_KEY, chapterBars, emptyProgress, overallChapterScore } from '../lib/progress'
 
@@ -15,9 +16,11 @@ function ProgressPage() {
       <header>
         <h1 className="font-serif text-4xl">Progress</h1>
         <p className="mt-2 text-slate-700">
-          Stored in this browser only ({STORAGE_KEY}). No account is required in Phase A.
+          Stored in this browser only ({STORAGE_KEY}). No account is required.
         </p>
       </header>
+
+      <WeakQueueCard items={state.weakQueue} />
 
       <Card>
         <h2 className="font-serif text-2xl">Chapter heatmap</h2>
@@ -104,7 +107,14 @@ function ProgressPage() {
                     {new Date(item.at).toLocaleString('en-GB')} · {item.marks}/{item.total} · {item.percent}%
                   </p>
                 </div>
-                <Pill>{item.band}</Pill>
+                <div className="flex items-center gap-3">
+                  <Pill>{item.band}</Pill>
+                  {item.mockId === 'group-a' ? (
+                    <Link to="/mocks/group-a/review" className="text-sm font-semibold text-teal-800">
+                      Review
+                    </Link>
+                  ) : null}
+                </div>
               </li>
             ))}
           </ul>

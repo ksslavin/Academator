@@ -32,6 +32,7 @@ function ChapterLayout() {
     { to: '/chapters/$slug/theory' as const, label: 'Theory', path: `/chapters/${chapter.slug}/theory` },
     { to: '/chapters/$slug/practice' as const, label: 'Practice', path: `/chapters/${chapter.slug}/practice` },
     { to: '/chapters/$slug/test' as const, label: 'Test', path: `/chapters/${chapter.slug}/test` },
+    { to: '/chapters/$slug/review' as const, label: 'Review', path: `/chapters/${chapter.slug}/review` },
   ]
 
   return (
@@ -60,7 +61,9 @@ function ChapterLayout() {
                 params={{ slug: chapter.slug }}
                 className={cn(
                   'min-h-12 shrink-0 rounded-xl px-4 text-sm font-semibold',
-                  pathname === tab.path || (tab.label === 'Test' && pathname.endsWith('/results'))
+                  pathname === tab.path ||
+                    (tab.label === 'Test' && pathname.endsWith('/results')) ||
+                    (tab.label === 'Review' && pathname.endsWith('/review'))
                     ? 'bg-teal-800 text-white'
                     : 'bg-white text-slate-700',
                 )}

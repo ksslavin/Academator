@@ -7,8 +7,10 @@ import type {
   PracticeRecord,
   ProgressState,
   Tier,
+  WeakQueueItem,
 } from './types'
 import type { Question } from './types'
+import { chapterIdForQuestionId, queueKey } from './study'
 
 export const STORAGE_KEY = 'practice-book-gcse-maths-v1'
 
@@ -19,6 +21,7 @@ export const emptyProgress = (): ProgressState => ({
   lastPath: null,
   chapters: {},
   mocks: [],
+  weakQueue: [],
 })
 
 function emptyChapter(): ChapterProgress {
@@ -37,6 +40,7 @@ export function readProgress(): ProgressState {
       ...parsed,
       chapters: parsed.chapters ?? {},
       mocks: parsed.mocks ?? [],
+      weakQueue: parsed.weakQueue ?? [],
     }
   } catch {
     return emptyProgress()
@@ -174,43 +178,109 @@ export function latestMock(state: ProgressState): MockHistoryItem | undefined {
   return state.mocks[0]
 }
 
+function enqueueWeak(state: ProgressState, item: Omit<WeakQueueItem, 'key' | 'at'>): ProgressState {
+  const key = queueKey(item.source, item.questionId)
+  const nextItem: WeakQueueItem = { ...item, key, at: new Date().toISOString() }
+  return {
+    ...state,
+    weakQueue: [nextItem, ...state.weakQueue.filter((entry) => entry.key !== key)].slice(0, 16),
+  }
+}
+
+export function dequeueWeak(state: ProgressState, questionId: string): ProgressState {
+  return {
+    ...state,
+    weakQueue: state.weakQueue.filter((entry) => entry.questionId !== questionId),
+  }
+}
+
+export function applyAttemptToQueue(
+  state: ProgressState,
+  questions: Question[],
+  result: AttemptResult,
+  source: 'test' | 'mock',
+  chapterId: number | null,
+  mockId?: string,
+): ProgressState {
+  let next = state
+  for (const question of questions) {
+    const marked = result.questionResults.find((item) => item.questionId === question.id)
+    if (!marked) continue
+    if (marked.correct) {
+      next = dequeueWeak(next, question.id)
+    } else {
+      next = enqueueWeak(next, {
+        chapterId: chapterId ?? chapterIdForQuestionId(question.id),
+        questionId: question.id,
+        skill: question.skill,
+        source,
+        mockId,
+      })
+    }
+  }
+  return next
+}
+
 export function recordPractice(
   state: ProgressState,
   chapterId: number,
-  questionId: string,
+  question: Question,
   correct: boolean,
   lastAnswer: string,
 ): ProgressState {
   const current = chapterProgress(state, chapterId)
-  const existing = current.practice[questionId]
-  return upsertChapter(state, chapterId, {
+  const existing = current.practice[question.id]
+  let next = upsertChapter(state, chapterId, {
     practice: {
       ...current.practice,
-      [questionId]: {
+      [question.id]: {
         attempts: (existing?.attempts ?? 0) + 1,
         correct: existing?.correct || correct,
         lastAnswer,
       },
     },
   })
+  if (correct) {
+    next = dequeueWeak(next, question.id)
+  } else {
+    next = enqueueWeak(next, {
+      chapterId,
+      questionId: question.id,
+      skill: question.skill,
+      source: 'practice',
+    })
+  }
+  return next
 }
 
 export function recordTest(
   state: ProgressState,
   chapterId: number,
   result: AttemptResult,
+  questions: Question[],
 ): ProgressState {
   const current = chapterProgress(state, chapterId)
-  return upsertChapter(state, chapterId, {
+  const stored = upsertChapter(state, chapterId, {
     tests: [result, ...current.tests].slice(0, 8),
     testDraft: undefined,
   })
+  return applyAttemptToQueue(stored, questions, result, 'test', chapterId)
 }
 
-export function recordMock(state: ProgressState, result: MockHistoryItem): ProgressState {
-  return {
+export function recordMock(
+  state: ProgressState,
+  result: MockHistoryItem,
+  questions: Question[],
+): ProgressState {
+  const stored = {
     ...state,
     mocks: [result, ...state.mocks].slice(0, 12),
     mockDraft: undefined,
   }
+  return applyAttemptToQueue(stored, questions, result, 'mock', null, result.mockId)
+}
+
+export function missedPractice(state: ProgressState, chapterId: number, questions: Question[]): Question[] {
+  const records = chapterProgress(state, chapterId).practice
+  return questions.filter((question) => records[question.id] && !records[question.id]?.correct)
 }

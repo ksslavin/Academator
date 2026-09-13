@@ -25,7 +25,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       >
         Skip to content
       </a>
-      <header className="sticky top-0 z-30 border-b border-stone-200/80 bg-[rgba(246,241,232,0.92)] backdrop-blur">
+      <header className="sticky top-0 z-30 border-b border-stone-200/80 bg-[rgba(246,241,232,0.92)] backdrop-blur print:hidden">
         <div className="mx-auto flex max-w-5xl items-center gap-3 px-4 py-3">
           <Link to="/" className="min-w-0 flex-1">
             <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-teal-800">
@@ -80,7 +80,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       </main>
 
       <nav
-        className="fixed inset-x-0 bottom-0 z-30 border-t border-stone-200 bg-[rgba(246,241,232,0.96)] px-2 py-2 md:hidden"
+        className="fixed inset-x-0 bottom-0 z-30 border-t border-stone-200 bg-[rgba(246,241,232,0.96)] px-2 py-2 print:hidden md:hidden"
         aria-label="Mobile"
       >
         <div className="mx-auto grid max-w-lg grid-cols-5 gap-1">

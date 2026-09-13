@@ -2,6 +2,7 @@ import { Link, createFileRoute, useRouter } from '@tanstack/react-router'
 import { BOOKS, CHAPTERS, getChapter } from '../content/catalog'
 import { getLiveChapter, livePracticeById } from '../content'
 import { useProgress } from '../components/ProgressProvider'
+import { WeakQueueCard } from '../components/WeakQueue'
 import { Bar, Card, Pill, PrimaryButton } from '../components/ui'
 import { chapterBars, nextRecommendedTest, weakChapters } from '../lib/progress'
 
@@ -109,6 +110,8 @@ function Home() {
           )}
         </Card>
       </div>
+
+      <WeakQueueCard items={state.weakQueue} />
 
       <Card>
         <h2 className="font-serif text-2xl">Weak topics</h2>

@@ -42,14 +42,26 @@ function ResultsPage() {
         result={last}
         questions={questions}
         theorySlug={chapter.slug}
+        reviewTo="/chapters/$slug/review"
+        reviewParams={{ slug: chapter.slug }}
       />
-      <Link
-        to="/chapters/$slug/test"
-        params={{ slug: chapter.slug }}
-        className="inline-flex min-h-11 text-sm font-semibold text-teal-800"
-      >
-        Retake chapter test
-      </Link>
+      <div className="flex flex-wrap gap-4">
+        <Link
+          to="/chapters/$slug/review"
+          params={{ slug: chapter.slug }}
+          search={{ from: 'test' }}
+          className="inline-flex min-h-11 text-sm font-semibold text-teal-800"
+        >
+          Review wrong answers
+        </Link>
+        <Link
+          to="/chapters/$slug/test"
+          params={{ slug: chapter.slug }}
+          className="inline-flex min-h-11 text-sm font-semibold text-teal-800"
+        >
+          Retake chapter test
+        </Link>
+      </div>
     </div>
   )
 }

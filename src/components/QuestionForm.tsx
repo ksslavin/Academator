@@ -2,8 +2,18 @@ import { useMemo, useState } from 'react'
 import type { Question } from '../lib/types'
 import { flattenParts } from '../lib/types'
 import { markQuestion } from '../lib/marking'
+import { calculatorMode, hintsFor, solutionSteps } from '../lib/study'
 import { MathText } from './MathText'
 import { Pill, PrimaryButton, SecondaryButton, cn } from './ui'
+
+export function CalculatorBadge({ question }: { question: Question }) {
+  const mode = calculatorMode(question)
+  return mode === 'calc' ? (
+    <Pill tone="calc">Calculator</Pill>
+  ) : (
+    <Pill tone="noncalc">Non-calculator</Pill>
+  )
+}
 
 export function QuestionPrompt({
   question,
@@ -22,13 +32,21 @@ export function QuestionPrompt({
             Question {index + 1} of {total}
           </p>
         ) : null}
-        <Pill>{question.marks} mark{question.marks === 1 ? '' : 's'}</Pill>
+        <Pill>
+          {question.marks} mark{question.marks === 1 ? '' : 's'}
+        </Pill>
+        <CalculatorBadge question={question} />
         {question.tier !== 'both' ? <Pill tone={question.tier === 'H' ? 'h' : 'f'}>{question.tier}</Pill> : null}
         <Pill tone="muted">{question.skill}</Pill>
       </div>
       <div className="text-lg leading-relaxed text-slate-900">
         <MathText text={question.prompt} />
       </div>
+      {calculatorMode(question) === 'non-calc' ? (
+        <p className="text-xs text-amber-900">Work this without a calculator.</p>
+      ) : (
+        <p className="text-xs text-indigo-800">A calculator is allowed for this question.</p>
+      )}
     </div>
   )
 }
@@ -101,6 +119,26 @@ function PartInputs({
   )
 }
 
+function StepList({
+  steps,
+  revealed,
+}: {
+  steps: ReturnType<typeof solutionSteps>
+  revealed: number
+}) {
+  if (revealed <= 0) return null
+  return (
+    <ol className="list-decimal space-y-1 pl-5 text-sm text-slate-800">
+      {steps.slice(0, revealed).map((step) => (
+        <li key={step.key}>
+          <span className="sr-only">{step.label}. </span>
+          <MathText text={step.text} />
+        </li>
+      ))}
+    </ol>
+  )
+}
+
 export function PracticeQuestion({
   question,
   index,
@@ -120,7 +158,17 @@ export function PracticeQuestion({
 }) {
   const [answers, setAnswers] = useState<Record<string, string>>(initial?.answers ?? {})
   const [marked, setMarked] = useState(Boolean(initial?.marked))
+  const [hintCount, setHintCount] = useState(0)
+  const [stepCount, setStepCount] = useState(initial?.marked ? solutionSteps(question).length : 0)
+  const hints = hintsFor(question)
+  const steps = solutionSteps(question)
   const result = useMemo(() => (marked ? markQuestion(question, answers) : null), [answers, marked, question])
+
+  const retry = () => {
+    setAnswers({})
+    setMarked(false)
+    setStepCount(0)
+  }
 
   return (
     <div className="space-y-5">
@@ -131,6 +179,26 @@ export function PracticeQuestion({
         disabled={marked}
         onChange={(id, value) => setAnswers((current) => ({ ...current, [id]: value }))}
       />
+      {hintCount > 0 ? (
+        <div className="rounded-xl border border-sky-200 bg-sky-50 p-4 text-sm text-slate-800">
+          <p className="font-semibold">Hints</p>
+          <ol className="mt-2 list-decimal space-y-1 pl-5">
+            {hints.slice(0, hintCount).map((hint) => (
+              <li key={hint}>
+                <MathText text={hint} />
+              </li>
+            ))}
+          </ol>
+        </div>
+      ) : null}
+      {stepCount > 0 ? (
+        <div className="rounded-xl border border-stone-200 bg-stone-50 p-4">
+          <p className="mb-2 text-sm font-semibold text-slate-800">
+            {stepCount >= steps.length ? 'Full solution' : `Worked steps (${stepCount} of ${steps.length})`}
+          </p>
+          <StepList steps={steps} revealed={stepCount} />
+        </div>
+      ) : null}
       {result ? (
         <div
           className={cn(
@@ -141,39 +209,43 @@ export function PracticeQuestion({
           <p className="font-semibold">
             {result.correct ? 'Correct' : 'Not quite'} · {result.marksAwarded}/{result.marksAvailable}
           </p>
-          <div className="mt-3 space-y-2 text-sm text-slate-800">
-            <p className="font-medium">Full solution</p>
-            {(question.parts ?? [{ solution: question.solution ?? [], label: '', id: question.id }]).map((part) => (
-              <div key={part.id || 'main'}>
-                {part.label ? <p className="font-semibold">Part {part.label}</p> : null}
-                <ol className="list-decimal space-y-1 pl-5">
-                  {(part.solution ?? []).map((step) => (
-                    <li key={step}>
-                      <MathText text={step} />
-                    </li>
-                  ))}
-                </ol>
-              </div>
-            ))}
-          </div>
+          <p className="mt-1 text-sm text-slate-700">
+            Use Show step to reveal the solution one line at a time, or retry the same question.
+          </p>
         </div>
       ) : null}
       <div className="flex flex-wrap gap-2">
         <SecondaryButton onClick={onPrev} disabled={index === 0}>
           Previous
         </SecondaryButton>
+        <SecondaryButton
+          onClick={() => setHintCount((count) => Math.min(hints.length, count + 1))}
+          disabled={hintCount >= hints.length}
+        >
+          {hintCount === 0 ? 'Hint' : hintCount >= hints.length ? 'All hints shown' : 'Next hint'}
+        </SecondaryButton>
+        <SecondaryButton
+          onClick={() => setStepCount((count) => Math.min(steps.length, count + 1))}
+          disabled={stepCount >= steps.length}
+        >
+          {stepCount === 0 ? 'Show step' : stepCount >= steps.length ? 'All steps shown' : 'Show next step'}
+        </SecondaryButton>
         {!marked ? (
           <PrimaryButton
             onClick={() => {
               const next = markQuestion(question, answers)
               setMarked(true)
+              if (stepCount === 0) setStepCount(1)
               onMarked(answers, next.correct)
             }}
           >
             Mark
           </PrimaryButton>
         ) : (
-          <PrimaryButton onClick={onNext}>{index === total - 1 ? 'Finish' : 'Next'}</PrimaryButton>
+          <>
+            <SecondaryButton onClick={retry}>Try again</SecondaryButton>
+            <PrimaryButton onClick={onNext}>{index === total - 1 ? 'Finish' : 'Next'}</PrimaryButton>
+          </>
         )}
       </div>
     </div>

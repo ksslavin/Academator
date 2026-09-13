@@ -1,20 +1,26 @@
 import { Link } from '@tanstack/react-router'
 import type { AttemptResult, Question } from '../lib/types'
+import { calculatorMode, formatUserAnswer } from '../lib/study'
 import { MathText } from './MathText'
 import { SolutionBlock } from './QuestionForm'
-import { Bar, Card, Pill } from './ui'
+import { Bar, Card, Pill, SecondaryButton } from './ui'
 
 export function ResultsView({
   title,
   result,
   questions,
   theorySlug,
+  reviewTo,
+  reviewParams,
 }: {
   title: string
   result: AttemptResult
   questions: Question[]
   theorySlug?: string
+  reviewTo?: '/chapters/$slug/review' | '/mocks/group-a/review'
+  reviewParams?: { slug: string }
 }) {
+  const missed = result.questionResults.filter((item) => !item.correct).length
   return (
     <div className="space-y-5">
       <Card>
@@ -32,6 +38,22 @@ export function ResultsView({
         <p className="mt-3 text-sm text-slate-600">
           Grade bands here are study guides only (1–3 / 4–5 / 6–7 / 8–9), not official exam-board boundaries.
         </p>
+        <div className="mt-4 flex flex-wrap gap-2 print:hidden">
+          {reviewTo === '/chapters/$slug/review' && reviewParams ? (
+            <Link to="/chapters/$slug/review" params={reviewParams} search={{ from: 'test' }}>
+              <SecondaryButton>
+                Review wrong answers{missed ? ` (${missed})` : ''}
+              </SecondaryButton>
+            </Link>
+          ) : null}
+          {reviewTo === '/mocks/group-a/review' ? (
+            <Link to="/mocks/group-a/review">
+              <SecondaryButton>
+                Review wrong answers{missed ? ` (${missed})` : ''}
+              </SecondaryButton>
+            </Link>
+          ) : null}
+        </div>
       </Card>
 
       <Card>
@@ -66,11 +88,19 @@ export function ResultsView({
                 <Pill tone={marked?.correct ? 'live' : 'lock'}>
                   {marked?.marksAwarded ?? 0}/{marked?.marksAvailable ?? question.marks}
                 </Pill>
+                <Pill tone={calculatorMode(question) === 'calc' ? 'calc' : 'noncalc'}>
+                  {calculatorMode(question) === 'calc' ? 'Calculator' : 'Non-calculator'}
+                </Pill>
                 <Pill>{question.skill}</Pill>
               </div>
               <div className="mt-2 text-slate-900">
                 <MathText text={question.prompt} />
               </div>
+              {result.answers ? (
+                <p className="mt-2 text-sm text-slate-600">
+                  Your answer: <MathText text={formatUserAnswer(question, result.answers)} />
+                </p>
+              ) : null}
               <div className="mt-3">
                 <p className="mb-1 text-sm font-medium">Solution</p>
                 <SolutionBlock question={question} />

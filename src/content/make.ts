@@ -1,10 +1,12 @@
-import type { ItemTier, Question, QuestionPart } from '../lib/types'
+import type { CalculatorMode, ItemTier, Question, QuestionPart } from '../lib/types'
 
 type Base = {
   id: string
   prompt: string
   skill: string
   tier?: ItemTier
+  hints?: string[]
+  calculator?: CalculatorMode
 }
 
 export function numeric(
@@ -33,6 +35,8 @@ export function numeric(
       placeholder: options.placeholder,
     },
     solution: options.solution,
+    hints: options.hints,
+    calculator: options.calculator,
   }
 }
 
@@ -56,6 +60,8 @@ export function mc(
       correctIndex: options.correctIndex,
     },
     solution: options.solution,
+    hints: options.hints,
+    calculator: options.calculator,
   }
 }
 
@@ -112,5 +118,7 @@ export function multi(
     tier: options.tier ?? 'both',
     marks: parts.reduce((sum, part) => sum + part.marks, 0),
     parts,
+    hints: options.hints,
+    calculator: options.calculator,
   }
 }

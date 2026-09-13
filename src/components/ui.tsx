@@ -50,7 +50,7 @@ export function Pill({
   tone = 'muted',
 }: {
   children: ReactNode
-  tone?: 'muted' | 'live' | 'lock' | 'f' | 'h'
+  tone?: 'muted' | 'live' | 'lock' | 'f' | 'h' | 'calc' | 'noncalc'
 }) {
   const styles = {
     muted: 'bg-stone-100 text-slate-600',
@@ -58,6 +58,8 @@ export function Pill({
     lock: 'bg-stone-100 text-stone-500',
     f: 'bg-sky-50 text-sky-800',
     h: 'bg-violet-50 text-violet-800',
+    calc: 'bg-indigo-50 text-indigo-800',
+    noncalc: 'bg-amber-50 text-amber-900',
   }[tone]
   return (
     <span className={cn('inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold', styles)}>

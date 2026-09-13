@@ -34,7 +34,10 @@ function MocksPage() {
             </p>
             {latest ? (
               <p className="mt-2 text-sm">
-                Last attempt {latest.percent}% · band {latest.band}
+                Last attempt {latest.percent}% · band {latest.band} ·{' '}
+                <Link to="/mocks/group-a/review" className="font-semibold text-teal-800">
+                  review wrong answers
+                </Link>
               </p>
             ) : null}
           </div>

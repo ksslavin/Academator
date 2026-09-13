@@ -209,6 +209,11 @@ export const chapter05: ChapterContent = {
       tier: 'H',
       prompt: '£1600 is invested at $5\\%$ compound interest for 2 years. What is the value after 2 years, in pounds?',
       marks: 3,
+      calculator: 'calc',
+      hints: [
+        'Compound interest uses the multiplier once per year: $\\times 1.05^2$, not $2\\times 5\\%$.',
+        'A calculator is appropriate: work out $1.05^2$ first, then multiply by 1600.',
+      ],
       answer: '1764',
       solution: ['$1600 \\times 1.05^2 = 1600 \\times 1.1025 = 1764$.'],
     }),
@@ -329,6 +334,11 @@ export const chapter05: ChapterContent = {
         tier: 'H',
         prompt: '£2000 is saved at $3\\%$ compound interest for 2 years. How much interest is earned, in pounds?',
         marks: 3,
+        calculator: 'calc',
+        hints: [
+          'Find the final amount with $\\times 1.03^2$, then subtract the £2000 you started with.',
+          'A calculator is appropriate for $1.03^2$.',
+        ],
         answer: '121.8',
         accepted: ['121.80'],
         tolerance: 0.01,

@@ -19,8 +19,10 @@ import { Route as MocksGroupARouteImport } from './routes/mocks_.group-a'
 import { Route as ChaptersSlugIndexRouteImport } from './routes/chapters.$slug.index'
 import { Route as ChaptersSlugPracticeRouteImport } from './routes/chapters.$slug.practice'
 import { Route as ChaptersSlugResultsRouteImport } from './routes/chapters.$slug.results'
+import { Route as ChaptersSlugReviewRouteImport } from './routes/chapters.$slug.review'
 import { Route as ChaptersSlugTestRouteImport } from './routes/chapters.$slug.test'
 import { Route as ChaptersSlugTheoryRouteImport } from './routes/chapters.$slug.theory'
+import { Route as MocksGroupAReviewRouteImport } from './routes/mocks_.group-a_.review'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -72,6 +74,11 @@ const ChaptersSlugResultsRoute = ChaptersSlugResultsRouteImport.update({
   path: '/results',
   getParentRoute: () => ChaptersSlugRoute,
 } as any)
+const ChaptersSlugReviewRoute = ChaptersSlugReviewRouteImport.update({
+  id: '/review',
+  path: '/review',
+  getParentRoute: () => ChaptersSlugRoute,
+} as any)
 const ChaptersSlugTestRoute = ChaptersSlugTestRouteImport.update({
   id: '/test',
   path: '/test',
@@ -81,6 +88,11 @@ const ChaptersSlugTheoryRoute = ChaptersSlugTheoryRouteImport.update({
   id: '/theory',
   path: '/theory',
   getParentRoute: () => ChaptersSlugRoute,
+} as any)
+const MocksGroupAReviewRoute = MocksGroupAReviewRouteImport.update({
+  id: '/mocks_/group-a_/review',
+  path: '/mocks/group-a/review',
+  getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -93,8 +105,10 @@ export interface FileRoutesByFullPath {
   '/mocks/group-a': typeof MocksGroupARoute
   '/chapters/$slug/practice': typeof ChaptersSlugPracticeRoute
   '/chapters/$slug/results': typeof ChaptersSlugResultsRoute
+  '/chapters/$slug/review': typeof ChaptersSlugReviewRoute
   '/chapters/$slug/test': typeof ChaptersSlugTestRoute
   '/chapters/$slug/theory': typeof ChaptersSlugTheoryRoute
+  '/mocks/group-a/review': typeof MocksGroupAReviewRoute
   '/chapters/$slug/': typeof ChaptersSlugIndexRoute
 }
 export interface FileRoutesByTo {
@@ -106,8 +120,10 @@ export interface FileRoutesByTo {
   '/mocks/group-a': typeof MocksGroupARoute
   '/chapters/$slug/practice': typeof ChaptersSlugPracticeRoute
   '/chapters/$slug/results': typeof ChaptersSlugResultsRoute
+  '/chapters/$slug/review': typeof ChaptersSlugReviewRoute
   '/chapters/$slug/test': typeof ChaptersSlugTestRoute
   '/chapters/$slug/theory': typeof ChaptersSlugTheoryRoute
+  '/mocks/group-a/review': typeof MocksGroupAReviewRoute
   '/chapters/$slug': typeof ChaptersSlugIndexRoute
 }
 export interface FileRoutesById {
@@ -121,8 +137,10 @@ export interface FileRoutesById {
   '/mocks_/group-a': typeof MocksGroupARoute
   '/chapters/$slug/practice': typeof ChaptersSlugPracticeRoute
   '/chapters/$slug/results': typeof ChaptersSlugResultsRoute
+  '/chapters/$slug/review': typeof ChaptersSlugReviewRoute
   '/chapters/$slug/test': typeof ChaptersSlugTestRoute
   '/chapters/$slug/theory': typeof ChaptersSlugTheoryRoute
+  '/mocks_/group-a_/review': typeof MocksGroupAReviewRoute
   '/chapters/$slug/': typeof ChaptersSlugIndexRoute
 }
 export interface FileRouteTypes {
@@ -137,8 +155,10 @@ export interface FileRouteTypes {
     | '/mocks/group-a'
     | '/chapters/$slug/practice'
     | '/chapters/$slug/results'
+    | '/chapters/$slug/review'
     | '/chapters/$slug/test'
     | '/chapters/$slug/theory'
+    | '/mocks/group-a/review'
     | '/chapters/$slug/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -150,8 +170,10 @@ export interface FileRouteTypes {
     | '/mocks/group-a'
     | '/chapters/$slug/practice'
     | '/chapters/$slug/results'
+    | '/chapters/$slug/review'
     | '/chapters/$slug/test'
     | '/chapters/$slug/theory'
+    | '/mocks/group-a/review'
     | '/chapters/$slug'
   id:
     | '__root__'
@@ -164,8 +186,10 @@ export interface FileRouteTypes {
     | '/mocks_/group-a'
     | '/chapters/$slug/practice'
     | '/chapters/$slug/results'
+    | '/chapters/$slug/review'
     | '/chapters/$slug/test'
     | '/chapters/$slug/theory'
+    | '/mocks_/group-a_/review'
     | '/chapters/$slug/'
   fileRoutesById: FileRoutesById
 }
@@ -177,6 +201,7 @@ export interface RootRouteChildren {
   ProgressRoute: typeof ProgressRoute
   ChaptersSlugRoute: typeof ChaptersSlugRouteWithChildren
   MocksGroupARoute: typeof MocksGroupARoute
+  MocksGroupAReviewRoute: typeof MocksGroupAReviewRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -251,6 +276,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ChaptersSlugResultsRouteImport
       parentRoute: typeof ChaptersSlugRoute
     }
+    '/chapters/$slug/review': {
+      id: '/chapters/$slug/review'
+      path: '/review'
+      fullPath: '/chapters/$slug/review'
+      preLoaderRoute: typeof ChaptersSlugReviewRouteImport
+      parentRoute: typeof ChaptersSlugRoute
+    }
     '/chapters/$slug/test': {
       id: '/chapters/$slug/test'
       path: '/test'
@@ -265,12 +297,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ChaptersSlugTheoryRouteImport
       parentRoute: typeof ChaptersSlugRoute
     }
+    '/mocks_/group-a_/review': {
+      id: '/mocks_/group-a_/review'
+      path: '/mocks/group-a/review'
+      fullPath: '/mocks/group-a/review'
+      preLoaderRoute: typeof MocksGroupAReviewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 interface ChaptersSlugRouteChildren {
   ChaptersSlugPracticeRoute: typeof ChaptersSlugPracticeRoute
   ChaptersSlugResultsRoute: typeof ChaptersSlugResultsRoute
+  ChaptersSlugReviewRoute: typeof ChaptersSlugReviewRoute
   ChaptersSlugTestRoute: typeof ChaptersSlugTestRoute
   ChaptersSlugTheoryRoute: typeof ChaptersSlugTheoryRoute
   ChaptersSlugIndexRoute: typeof ChaptersSlugIndexRoute
@@ -279,6 +319,7 @@ interface ChaptersSlugRouteChildren {
 const ChaptersSlugRouteChildren: ChaptersSlugRouteChildren = {
   ChaptersSlugPracticeRoute: ChaptersSlugPracticeRoute,
   ChaptersSlugResultsRoute: ChaptersSlugResultsRoute,
+  ChaptersSlugReviewRoute: ChaptersSlugReviewRoute,
   ChaptersSlugTestRoute: ChaptersSlugTestRoute,
   ChaptersSlugTheoryRoute: ChaptersSlugTheoryRoute,
   ChaptersSlugIndexRoute: ChaptersSlugIndexRoute,
@@ -296,7 +337,17 @@ const rootRouteChildren: RootRouteChildren = {
   ProgressRoute: ProgressRoute,
   ChaptersSlugRoute: ChaptersSlugRouteWithChildren,
   MocksGroupARoute: MocksGroupARoute,
+  MocksGroupAReviewRoute: MocksGroupAReviewRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}

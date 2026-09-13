@@ -39,14 +39,18 @@ function GroupMockA() {
       const currentDraft = current.mockDraft?.mockId === 'group-a' ? current.mockDraft : undefined
       if (!currentDraft) return current
       submitted = true
-      return recordMock(current, {
-        ...buildAttempt({
-          questions,
-          answers: currentDraft.answers,
-          startedAt: currentDraft.startedAt,
-        }),
-        mockId: 'group-a',
-      })
+      return recordMock(
+        current,
+        {
+          ...buildAttempt({
+            questions,
+            answers: currentDraft.answers,
+            startedAt: currentDraft.startedAt,
+          }),
+          mockId: 'group-a',
+        },
+        questions,
+      )
     })
     if (submitted) setPhase('done')
   }, [questions, update])
@@ -54,10 +58,23 @@ function GroupMockA() {
   if (phase === 'done' && last) {
     return (
       <div className="space-y-4">
-        <ResultsView title="Group mock A" result={last} questions={questions} />
-        <Link to="/mocks" className="inline-flex min-h-11 text-sm font-semibold text-teal-800">
-          Back to mocks
-        </Link>
+        <ResultsView
+          title="Group mock A"
+          result={last}
+          questions={questions}
+          reviewTo="/mocks/group-a/review"
+        />
+        <div className="flex flex-wrap gap-4">
+          <Link
+            to="/mocks/group-a/review"
+            className="inline-flex min-h-11 text-sm font-semibold text-teal-800"
+          >
+            Review wrong answers
+          </Link>
+          <Link to="/mocks" className="inline-flex min-h-11 text-sm font-semibold text-teal-800">
+            Back to mocks
+          </Link>
+        </div>
       </div>
     )
   }
@@ -110,7 +127,7 @@ function GroupMockA() {
       <ul className="list-disc space-y-1 pl-5 text-sm text-slate-700">
         <li>About {mock.durationMinutes} minutes</li>
         <li>{total} marks on your current tier</li>
-        <li>Marked on submit — solutions appear at the end</li>
+        <li>Marked on submit — hints and solutions appear only in the review afterwards</li>
         <li>Higher-only items are hidden on Foundation</li>
       </ul>
       <div className="flex flex-wrap gap-2">

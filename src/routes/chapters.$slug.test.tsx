@@ -40,7 +40,7 @@ function TestPage() {
       answers: draft.answers,
       startedAt: draft.startedAt,
     })
-    update((current) => recordTest(current, chapter.id, result))
+    update((current) => recordTest(current, chapter.id, result, questions))
     void navigate({ to: '/chapters/$slug/results', params: { slug: chapter.slug } })
   }, [chapter, draft, live, navigate, questions, update])
 
@@ -55,7 +55,8 @@ function TestPage() {
         <h2 className="font-serif text-2xl">Chapter test</h2>
         <p className="text-slate-700">
           Timed {live.test.durationMinutes} minutes · {total} marks on{' '}
-          {state.tier === 'H' ? 'Higher' : 'Foundation'}. Solutions stay hidden until you submit.
+          {state.tier === 'H' ? 'Higher' : 'Foundation'}. Hints and step-by-step solutions stay hidden
+          until you submit.
         </p>
         {last ? (
           <p className="text-sm text-slate-600">
