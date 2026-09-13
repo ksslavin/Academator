@@ -35,8 +35,10 @@ function PracticePage() {
   const live = chapter ? getLiveChapter(chapter.id) : undefined
   const { state, update } = useProgress()
   const questions = live ? visibleForTier(live.practice, state.tier) : []
-  const initialIndex = q ? Math.max(0, questions.findIndex((item) => item.id === q)) : 0
-  const [index, setIndex] = useState(initialIndex < 0 ? 0 : initialIndex)
+  const linkedIndex = q ? questions.findIndex((item) => item.id === q) : -1
+  const hiddenByTier = Boolean(q && linkedIndex < 0)
+  const initialIndex = linkedIndex >= 0 ? linkedIndex : 0
+  const [index, setIndex] = useState(initialIndex)
 
   useEffect(() => {
     if (!q) return
@@ -68,6 +70,12 @@ function PracticePage() {
 
   return (
     <div className="space-y-4">
+      {hiddenByTier ? (
+        <p className="rounded-xl bg-amber-50 px-3 py-2 text-sm text-amber-950">
+          That question is Higher-only. Switch to Higher in the header to open it, or pick another
+          question below.
+        </p>
+      ) : null}
       <div className="flex flex-wrap items-center justify-between gap-2">
         <p className="text-sm text-slate-600">
           One question at a time. Use hints or show the next step, then mark. Try again if you need another go.
