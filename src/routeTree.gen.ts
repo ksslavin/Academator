@@ -21,6 +21,7 @@ import { Route as ChaptersSlugPracticeRouteImport } from './routes/chapters.$slu
 import { Route as ChaptersSlugResultsRouteImport } from './routes/chapters.$slug.results'
 import { Route as ChaptersSlugTestRouteImport } from './routes/chapters.$slug.test'
 import { Route as ChaptersSlugTheoryRouteImport } from './routes/chapters.$slug.theory'
+import { Route as MocksMockIdIndexRouteImport } from './routes/mocks_.$mockId.index'
 import { Route as MocksMockIdReviewRouteImport } from './routes/mocks_.$mockId.review'
 import { Route as MocksMockIdSitPaperIdRouteImport } from './routes/mocks_.$mockId.sit.$paperId'
 
@@ -84,6 +85,11 @@ const ChaptersSlugTheoryRoute = ChaptersSlugTheoryRouteImport.update({
   path: '/theory',
   getParentRoute: () => ChaptersSlugRoute,
 } as any)
+const MocksMockIdIndexRoute = MocksMockIdIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => MocksMockIdRoute,
+} as any)
 const MocksMockIdReviewRoute = MocksMockIdReviewRouteImport.update({
   id: '/review',
   path: '/review',
@@ -109,6 +115,7 @@ export interface FileRoutesByFullPath {
   '/chapters/$slug/theory': typeof ChaptersSlugTheoryRoute
   '/mocks/$mockId/review': typeof MocksMockIdReviewRoute
   '/chapters/$slug/': typeof ChaptersSlugIndexRoute
+  '/mocks/$mockId/': typeof MocksMockIdIndexRoute
   '/mocks/$mockId/sit/$paperId': typeof MocksMockIdSitPaperIdRoute
 }
 export interface FileRoutesByTo {
@@ -117,13 +124,13 @@ export interface FileRoutesByTo {
   '/library': typeof LibraryRoute
   '/mocks': typeof MocksRoute
   '/progress': typeof ProgressRoute
-  '/mocks/$mockId': typeof MocksMockIdRouteWithChildren
   '/chapters/$slug/practice': typeof ChaptersSlugPracticeRoute
   '/chapters/$slug/results': typeof ChaptersSlugResultsRoute
   '/chapters/$slug/test': typeof ChaptersSlugTestRoute
   '/chapters/$slug/theory': typeof ChaptersSlugTheoryRoute
   '/mocks/$mockId/review': typeof MocksMockIdReviewRoute
   '/chapters/$slug': typeof ChaptersSlugIndexRoute
+  '/mocks/$mockId': typeof MocksMockIdIndexRoute
   '/mocks/$mockId/sit/$paperId': typeof MocksMockIdSitPaperIdRoute
 }
 export interface FileRoutesById {
@@ -141,6 +148,7 @@ export interface FileRoutesById {
   '/chapters/$slug/theory': typeof ChaptersSlugTheoryRoute
   '/mocks_/$mockId/review': typeof MocksMockIdReviewRoute
   '/chapters/$slug/': typeof ChaptersSlugIndexRoute
+  '/mocks_/$mockId/': typeof MocksMockIdIndexRoute
   '/mocks_/$mockId/sit/$paperId': typeof MocksMockIdSitPaperIdRoute
 }
 export interface FileRouteTypes {
@@ -159,6 +167,7 @@ export interface FileRouteTypes {
     | '/chapters/$slug/theory'
     | '/mocks/$mockId/review'
     | '/chapters/$slug/'
+    | '/mocks/$mockId/'
     | '/mocks/$mockId/sit/$paperId'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -167,13 +176,13 @@ export interface FileRouteTypes {
     | '/library'
     | '/mocks'
     | '/progress'
-    | '/mocks/$mockId'
     | '/chapters/$slug/practice'
     | '/chapters/$slug/results'
     | '/chapters/$slug/test'
     | '/chapters/$slug/theory'
     | '/mocks/$mockId/review'
     | '/chapters/$slug'
+    | '/mocks/$mockId'
     | '/mocks/$mockId/sit/$paperId'
   id:
     | '__root__'
@@ -190,6 +199,7 @@ export interface FileRouteTypes {
     | '/chapters/$slug/theory'
     | '/mocks_/$mockId/review'
     | '/chapters/$slug/'
+    | '/mocks_/$mockId/'
     | '/mocks_/$mockId/sit/$paperId'
   fileRoutesById: FileRoutesById
 }
@@ -289,6 +299,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ChaptersSlugTheoryRouteImport
       parentRoute: typeof ChaptersSlugRoute
     }
+    '/mocks_/$mockId/': {
+      id: '/mocks_/$mockId/'
+      path: '/'
+      fullPath: '/mocks/$mockId/'
+      preLoaderRoute: typeof MocksMockIdIndexRouteImport
+      parentRoute: typeof MocksMockIdRoute
+    }
     '/mocks_/$mockId/review': {
       id: '/mocks_/$mockId/review'
       path: '/review'
@@ -328,11 +345,13 @@ const ChaptersSlugRouteWithChildren = ChaptersSlugRoute._addFileChildren(
 
 interface MocksMockIdRouteChildren {
   MocksMockIdReviewRoute: typeof MocksMockIdReviewRoute
+  MocksMockIdIndexRoute: typeof MocksMockIdIndexRoute
   MocksMockIdSitPaperIdRoute: typeof MocksMockIdSitPaperIdRoute
 }
 
 const MocksMockIdRouteChildren: MocksMockIdRouteChildren = {
   MocksMockIdReviewRoute: MocksMockIdReviewRoute,
+  MocksMockIdIndexRoute: MocksMockIdIndexRoute,
   MocksMockIdSitPaperIdRoute: MocksMockIdSitPaperIdRoute,
 }
 
@@ -352,3 +371,12 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}
