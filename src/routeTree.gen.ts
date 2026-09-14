@@ -15,12 +15,15 @@ import { Route as LibraryRouteImport } from './routes/library'
 import { Route as MocksRouteImport } from './routes/mocks'
 import { Route as ProgressRouteImport } from './routes/progress'
 import { Route as ChaptersSlugRouteImport } from './routes/chapters.$slug'
-import { Route as MocksGroupARouteImport } from './routes/mocks_.group-a'
+import { Route as MocksMockIdRouteImport } from './routes/mocks_.$mockId'
 import { Route as ChaptersSlugIndexRouteImport } from './routes/chapters.$slug.index'
 import { Route as ChaptersSlugPracticeRouteImport } from './routes/chapters.$slug.practice'
 import { Route as ChaptersSlugResultsRouteImport } from './routes/chapters.$slug.results'
 import { Route as ChaptersSlugTestRouteImport } from './routes/chapters.$slug.test'
 import { Route as ChaptersSlugTheoryRouteImport } from './routes/chapters.$slug.theory'
+import { Route as MocksMockIdIndexRouteImport } from './routes/mocks_.$mockId.index'
+import { Route as MocksMockIdReviewRouteImport } from './routes/mocks_.$mockId.review'
+import { Route as MocksMockIdSitPaperIdRouteImport } from './routes/mocks_.$mockId.sit.$paperId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -52,9 +55,9 @@ const ChaptersSlugRoute = ChaptersSlugRouteImport.update({
   path: '/chapters/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
-const MocksGroupARoute = MocksGroupARouteImport.update({
-  id: '/mocks_/group-a',
-  path: '/mocks/group-a',
+const MocksMockIdRoute = MocksMockIdRouteImport.update({
+  id: '/mocks_/$mockId',
+  path: '/mocks/$mockId',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ChaptersSlugIndexRoute = ChaptersSlugIndexRouteImport.update({
@@ -82,6 +85,21 @@ const ChaptersSlugTheoryRoute = ChaptersSlugTheoryRouteImport.update({
   path: '/theory',
   getParentRoute: () => ChaptersSlugRoute,
 } as any)
+const MocksMockIdIndexRoute = MocksMockIdIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => MocksMockIdRoute,
+} as any)
+const MocksMockIdReviewRoute = MocksMockIdReviewRouteImport.update({
+  id: '/review',
+  path: '/review',
+  getParentRoute: () => MocksMockIdRoute,
+} as any)
+const MocksMockIdSitPaperIdRoute = MocksMockIdSitPaperIdRouteImport.update({
+  id: '/sit/$paperId',
+  path: '/sit/$paperId',
+  getParentRoute: () => MocksMockIdRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -90,12 +108,15 @@ export interface FileRoutesByFullPath {
   '/mocks': typeof MocksRoute
   '/progress': typeof ProgressRoute
   '/chapters/$slug': typeof ChaptersSlugRouteWithChildren
-  '/mocks/group-a': typeof MocksGroupARoute
+  '/mocks/$mockId': typeof MocksMockIdRouteWithChildren
   '/chapters/$slug/practice': typeof ChaptersSlugPracticeRoute
   '/chapters/$slug/results': typeof ChaptersSlugResultsRoute
   '/chapters/$slug/test': typeof ChaptersSlugTestRoute
   '/chapters/$slug/theory': typeof ChaptersSlugTheoryRoute
+  '/mocks/$mockId/review': typeof MocksMockIdReviewRoute
   '/chapters/$slug/': typeof ChaptersSlugIndexRoute
+  '/mocks/$mockId/': typeof MocksMockIdIndexRoute
+  '/mocks/$mockId/sit/$paperId': typeof MocksMockIdSitPaperIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -103,12 +124,14 @@ export interface FileRoutesByTo {
   '/library': typeof LibraryRoute
   '/mocks': typeof MocksRoute
   '/progress': typeof ProgressRoute
-  '/mocks/group-a': typeof MocksGroupARoute
   '/chapters/$slug/practice': typeof ChaptersSlugPracticeRoute
   '/chapters/$slug/results': typeof ChaptersSlugResultsRoute
   '/chapters/$slug/test': typeof ChaptersSlugTestRoute
   '/chapters/$slug/theory': typeof ChaptersSlugTheoryRoute
+  '/mocks/$mockId/review': typeof MocksMockIdReviewRoute
   '/chapters/$slug': typeof ChaptersSlugIndexRoute
+  '/mocks/$mockId': typeof MocksMockIdIndexRoute
+  '/mocks/$mockId/sit/$paperId': typeof MocksMockIdSitPaperIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -118,12 +141,15 @@ export interface FileRoutesById {
   '/mocks': typeof MocksRoute
   '/progress': typeof ProgressRoute
   '/chapters/$slug': typeof ChaptersSlugRouteWithChildren
-  '/mocks_/group-a': typeof MocksGroupARoute
+  '/mocks_/$mockId': typeof MocksMockIdRouteWithChildren
   '/chapters/$slug/practice': typeof ChaptersSlugPracticeRoute
   '/chapters/$slug/results': typeof ChaptersSlugResultsRoute
   '/chapters/$slug/test': typeof ChaptersSlugTestRoute
   '/chapters/$slug/theory': typeof ChaptersSlugTheoryRoute
+  '/mocks_/$mockId/review': typeof MocksMockIdReviewRoute
   '/chapters/$slug/': typeof ChaptersSlugIndexRoute
+  '/mocks_/$mockId/': typeof MocksMockIdIndexRoute
+  '/mocks_/$mockId/sit/$paperId': typeof MocksMockIdSitPaperIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -134,12 +160,15 @@ export interface FileRouteTypes {
     | '/mocks'
     | '/progress'
     | '/chapters/$slug'
-    | '/mocks/group-a'
+    | '/mocks/$mockId'
     | '/chapters/$slug/practice'
     | '/chapters/$slug/results'
     | '/chapters/$slug/test'
     | '/chapters/$slug/theory'
+    | '/mocks/$mockId/review'
     | '/chapters/$slug/'
+    | '/mocks/$mockId/'
+    | '/mocks/$mockId/sit/$paperId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -147,12 +176,14 @@ export interface FileRouteTypes {
     | '/library'
     | '/mocks'
     | '/progress'
-    | '/mocks/group-a'
     | '/chapters/$slug/practice'
     | '/chapters/$slug/results'
     | '/chapters/$slug/test'
     | '/chapters/$slug/theory'
+    | '/mocks/$mockId/review'
     | '/chapters/$slug'
+    | '/mocks/$mockId'
+    | '/mocks/$mockId/sit/$paperId'
   id:
     | '__root__'
     | '/'
@@ -161,12 +192,15 @@ export interface FileRouteTypes {
     | '/mocks'
     | '/progress'
     | '/chapters/$slug'
-    | '/mocks_/group-a'
+    | '/mocks_/$mockId'
     | '/chapters/$slug/practice'
     | '/chapters/$slug/results'
     | '/chapters/$slug/test'
     | '/chapters/$slug/theory'
+    | '/mocks_/$mockId/review'
     | '/chapters/$slug/'
+    | '/mocks_/$mockId/'
+    | '/mocks_/$mockId/sit/$paperId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -176,7 +210,7 @@ export interface RootRouteChildren {
   MocksRoute: typeof MocksRoute
   ProgressRoute: typeof ProgressRoute
   ChaptersSlugRoute: typeof ChaptersSlugRouteWithChildren
-  MocksGroupARoute: typeof MocksGroupARoute
+  MocksMockIdRoute: typeof MocksMockIdRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -223,11 +257,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ChaptersSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/mocks_/group-a': {
-      id: '/mocks_/group-a'
-      path: '/mocks/group-a'
-      fullPath: '/mocks/group-a'
-      preLoaderRoute: typeof MocksGroupARouteImport
+    '/mocks_/$mockId': {
+      id: '/mocks_/$mockId'
+      path: '/mocks/$mockId'
+      fullPath: '/mocks/$mockId'
+      preLoaderRoute: typeof MocksMockIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/chapters/$slug/': {
@@ -265,6 +299,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ChaptersSlugTheoryRouteImport
       parentRoute: typeof ChaptersSlugRoute
     }
+    '/mocks_/$mockId/': {
+      id: '/mocks_/$mockId/'
+      path: '/'
+      fullPath: '/mocks/$mockId/'
+      preLoaderRoute: typeof MocksMockIdIndexRouteImport
+      parentRoute: typeof MocksMockIdRoute
+    }
+    '/mocks_/$mockId/review': {
+      id: '/mocks_/$mockId/review'
+      path: '/review'
+      fullPath: '/mocks/$mockId/review'
+      preLoaderRoute: typeof MocksMockIdReviewRouteImport
+      parentRoute: typeof MocksMockIdRoute
+    }
+    '/mocks_/$mockId/sit/$paperId': {
+      id: '/mocks_/$mockId/sit/$paperId'
+      path: '/sit/$paperId'
+      fullPath: '/mocks/$mockId/sit/$paperId'
+      preLoaderRoute: typeof MocksMockIdSitPaperIdRouteImport
+      parentRoute: typeof MocksMockIdRoute
+    }
   }
 }
 
@@ -288,6 +343,22 @@ const ChaptersSlugRouteWithChildren = ChaptersSlugRoute._addFileChildren(
   ChaptersSlugRouteChildren,
 )
 
+interface MocksMockIdRouteChildren {
+  MocksMockIdReviewRoute: typeof MocksMockIdReviewRoute
+  MocksMockIdIndexRoute: typeof MocksMockIdIndexRoute
+  MocksMockIdSitPaperIdRoute: typeof MocksMockIdSitPaperIdRoute
+}
+
+const MocksMockIdRouteChildren: MocksMockIdRouteChildren = {
+  MocksMockIdReviewRoute: MocksMockIdReviewRoute,
+  MocksMockIdIndexRoute: MocksMockIdIndexRoute,
+  MocksMockIdSitPaperIdRoute: MocksMockIdSitPaperIdRoute,
+}
+
+const MocksMockIdRouteWithChildren = MocksMockIdRoute._addFileChildren(
+  MocksMockIdRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   FormulasRoute: FormulasRoute,
@@ -295,8 +366,17 @@ const rootRouteChildren: RootRouteChildren = {
   MocksRoute: MocksRoute,
   ProgressRoute: ProgressRoute,
   ChaptersSlugRoute: ChaptersSlugRouteWithChildren,
-  MocksGroupARoute: MocksGroupARoute,
+  MocksMockIdRoute: MocksMockIdRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}

@@ -15,7 +15,7 @@ function ProgressPage() {
       <header>
         <h1 className="font-serif text-4xl">Progress</h1>
         <p className="mt-2 text-slate-700">
-          Stored in this browser only ({STORAGE_KEY}). No account is required in Phase A.
+          Stored in this browser only ({STORAGE_KEY}). No account is required.
         </p>
       </header>
 
@@ -90,23 +90,47 @@ function ProgressPage() {
 
       <Card>
         <h2 className="font-serif text-2xl">Mock history</h2>
-        {state.mocks.length === 0 ? (
+        {state.examSits.length === 0 && state.mocks.length === 0 ? (
           <p className="mt-2 text-sm text-slate-600">
-            No mocks yet. Group mock A is the Phase A live paper.
+            No mocks yet. Open the mocks hub to sit Year 10, November, March, Full GCSE or Group mock A.
           </p>
         ) : (
           <ul className="mt-3 space-y-2">
-            {state.mocks.map((item, index) => (
-              <li key={`${item.at}-${index}`} className="flex flex-wrap items-center justify-between gap-2 rounded-xl bg-stone-50 px-3 py-3">
-                <div>
-                  <p className="font-medium">{item.mockId === 'group-a' ? 'Group mock A' : item.mockId}</p>
-                  <p className="text-sm text-slate-600">
-                    {new Date(item.at).toLocaleString('en-GB')} · {item.marks}/{item.total} · {item.percent}%
-                  </p>
-                </div>
-                <Pill>{item.band}</Pill>
-              </li>
-            ))}
+            {(state.examSits.length > 0 ? state.examSits : state.mocks).map((item, index) => {
+              const sit = 'papers' in item ? item : null
+              const title = sit?.title ?? (item.mockId === 'group-a' ? 'Group mock A' : item.mockId)
+              return (
+                <li key={`${item.at}-${index}`} className="rounded-xl bg-stone-50 px-3 py-3">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <div>
+                      <p className="font-medium">{title}</p>
+                      <p className="text-sm text-slate-600">
+                        {new Date(item.at).toLocaleString('en-GB')} · {item.marks}/{item.total} · {item.percent}%
+                      </p>
+                      {sit ? (
+                        <p className="mt-1 text-xs text-slate-500">
+                          {sit.papers
+                            .map((paper) => `${paper.title} ${paper.result.percent}%`)
+                            .join(' · ')}
+                        </p>
+                      ) : null}
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Pill>{item.band}</Pill>
+                      {sit ? (
+                        <Link
+                          to="/mocks/$mockId/review"
+                          params={{ mockId: item.mockId }}
+                          className="text-sm font-semibold text-teal-800"
+                        >
+                          Review
+                        </Link>
+                      ) : null}
+                    </div>
+                  </div>
+                </li>
+              )
+            })}
           </ul>
         )}
         <Link to="/mocks" className="mt-3 inline-flex min-h-11 text-sm font-semibold text-teal-800">

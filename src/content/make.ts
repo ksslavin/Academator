@@ -1,10 +1,12 @@
-import type { ItemTier, Question, QuestionPart } from '../lib/types'
+import type { AssessmentObjective, ItemTier, Question, QuestionPart } from '../lib/types'
 
 type Base = {
   id: string
   prompt: string
   skill: string
   tier?: ItemTier
+  ao?: AssessmentObjective
+  chapter?: number
 }
 
 export function numeric(
@@ -24,6 +26,8 @@ export function numeric(
     skill: options.skill,
     tier: options.tier ?? 'both',
     marks: options.marks,
+    ao: options.ao,
+    chapter: options.chapter,
     spec: {
       kind: 'numeric',
       answer: options.answer,
@@ -50,6 +54,8 @@ export function mc(
     skill: options.skill,
     tier: options.tier ?? 'both',
     marks: options.marks,
+    ao: options.ao,
+    chapter: options.chapter,
     spec: {
       kind: 'mc',
       choices: options.choices,
@@ -111,6 +117,8 @@ export function multi(
     skill: options.skill,
     tier: options.tier ?? 'both',
     marks: parts.reduce((sum, part) => sum + part.marks, 0),
+    ao: options.ao,
+    chapter: options.chapter,
     parts,
   }
 }

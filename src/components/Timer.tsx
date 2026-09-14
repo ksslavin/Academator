@@ -9,16 +9,29 @@ function format(seconds: number): string {
 
 export function Timer({
   endsAt,
+  paused = false,
+  remainingMs,
   onExpire,
 }: {
   endsAt: number
+  paused?: boolean
+  remainingMs?: number
   onExpire: () => void
 }) {
-  const [left, setLeft] = useState(() => Math.ceil((endsAt - Date.now()) / 1000))
+  const initial = paused && remainingMs !== undefined
+    ? Math.ceil(remainingMs / 1000)
+    : Math.ceil((endsAt - Date.now()) / 1000)
+  const [left, setLeft] = useState(initial)
   const expired = useRef(false)
 
   useEffect(() => {
     expired.current = false
+    if (paused) {
+      const frozen =
+        remainingMs !== undefined ? Math.ceil(remainingMs / 1000) : Math.ceil((endsAt - Date.now()) / 1000)
+      setLeft(frozen)
+      return
+    }
     const tick = () => {
       const next = Math.ceil((endsAt - Date.now()) / 1000)
       setLeft(next)
@@ -30,7 +43,7 @@ export function Timer({
     tick()
     const id = window.setInterval(tick, 250)
     return () => window.clearInterval(id)
-  }, [endsAt, onExpire])
+  }, [endsAt, onExpire, paused, remainingMs])
 
   const urgent = left <= 60
   return (
@@ -40,7 +53,7 @@ export function Timer({
       }`}
       aria-live="polite"
     >
-      {format(left)}
+      {paused ? `Paused ${format(left)}` : format(left)}
     </p>
   )
 }

@@ -12,7 +12,7 @@ export function FormulaSheet({ onClose }: { onClose?: () => void }) {
           <p className="text-xs font-semibold uppercase tracking-wide text-teal-800">Always available</p>
           <h2 className="font-serif text-2xl text-slate-900">Formula sheet</h2>
           <p className="mt-1 text-sm text-slate-600">
-            Phase A sheet for England GCSE Maths 9–1 shared content. Higher-only items are marked.
+            Formula sheet for England GCSE Maths 9–1 shared content. Higher-only items are marked. Always available in exams.
           </p>
         </div>
         {onClose ? (

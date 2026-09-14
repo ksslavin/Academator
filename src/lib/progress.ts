@@ -3,6 +3,7 @@ import { visibleForTier } from './marking'
 import type {
   AttemptResult,
   ChapterProgress,
+  ExamSit,
   MockHistoryItem,
   PracticeRecord,
   ProgressState,
@@ -19,6 +20,7 @@ export const emptyProgress = (): ProgressState => ({
   lastPath: null,
   chapters: {},
   mocks: [],
+  examSits: [],
 })
 
 function emptyChapter(): ChapterProgress {
@@ -37,6 +39,7 @@ export function readProgress(): ProgressState {
       ...parsed,
       chapters: parsed.chapters ?? {},
       mocks: parsed.mocks ?? [],
+      examSits: parsed.examSits ?? [],
     }
   } catch {
     return emptyProgress()
@@ -131,7 +134,10 @@ export function weakChapters(
 
 export function nextRecommendedTest(
   state: ProgressState,
-): { id: number; title: string; reason: string } | { mock: true; reason: string } | null {
+):
+  | { id: number; title: string; reason: string }
+  | { mock: string; title: string; reason: string }
+  | null {
   const live = CHAPTERS.filter((chapter) => chapter.live)
   const untested = live.find((chapter) => chapterProgress(state, chapter.id).tests.length === 0)
   if (untested) {
@@ -157,9 +163,22 @@ export function nextRecommendedTest(
       reason: `Best test so far ${weakest.bestPercent}%`,
     }
   }
-  const hasMockA = state.mocks.some((item) => item.mockId === 'group-a')
-  if (!hasMockA) {
-    return { mock: true, reason: 'Sit Group mock A to check Number under timed conditions' }
+  const hasMock = (id: string) =>
+    state.examSits.some((sit) => sit.mockId === id) || state.mocks.some((item) => item.mockId === id)
+  if (!hasMock('group-a')) {
+    return { mock: 'group-a', title: 'Group mock A', reason: 'Sit Group mock A to check Number under timed conditions' }
+  }
+  if (!hasMock('year-10')) {
+    return { mock: 'year-10', title: 'Year 10 mock', reason: 'Sit the Year 10 two-paper mock next' }
+  }
+  if (!hasMock('november')) {
+    return { mock: 'november', title: 'November mock', reason: 'Sit the Y11 autumn three-paper mock' }
+  }
+  if (!hasMock('march')) {
+    return { mock: 'march', title: 'March mock', reason: 'Sit the Y11 spring full-spec mock' }
+  }
+  if (!hasMock('full-gcse')) {
+    return { mock: 'full-gcse', title: 'Full GCSE mock', reason: 'Sit the three-paper Full GCSE mock' }
   }
   return weakest
     ? {
@@ -213,4 +232,41 @@ export function recordMock(state: ProgressState, result: MockHistoryItem): Progr
     mocks: [result, ...state.mocks].slice(0, 12),
     mockDraft: undefined,
   }
+}
+
+export function recordExamSit(state: ProgressState, sit: ExamSit): ProgressState {
+  const skills: AttemptResult['skills'] = {}
+  const questionResults: AttemptResult['questionResults'] = []
+  for (const paper of sit.papers) {
+    for (const [skill, score] of Object.entries(paper.result.skills)) {
+      const bucket = skills[skill] ?? { marks: 0, total: 0 }
+      bucket.marks += score.marks
+      bucket.total += score.total
+      skills[skill] = bucket
+    }
+    questionResults.push(...paper.result.questionResults)
+  }
+  const summary: MockHistoryItem = {
+    mockId: sit.mockId,
+    at: sit.at,
+    marks: sit.marks,
+    total: sit.total,
+    percent: sit.percent,
+    band: sit.band,
+    durationSeconds: sit.durationSeconds,
+    skills,
+    questionResults,
+  }
+  return {
+    ...state,
+    mocks: [summary, ...state.mocks].slice(0, 12),
+    examSits: [sit, ...state.examSits].slice(0, 12),
+    examDraft: undefined,
+    examInProgress: undefined,
+    mockDraft: undefined,
+  }
+}
+
+export function latestExamSit(state: ProgressState, mockId: string): ExamSit | undefined {
+  return state.examSits.find((sit) => sit.mockId === mockId)
 }

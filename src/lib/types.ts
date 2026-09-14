@@ -62,6 +62,10 @@ export type QuestionPart = {
   solution: string[]
 }
 
+export type AssessmentObjective = 1 | 2 | 3
+export type CalculatorMode = 'calc' | 'non-calc'
+export type ExamStage = 'group' | 'year10' | 'november' | 'march' | 'full'
+
 export type Question = {
   id: string
   prompt: string
@@ -71,6 +75,8 @@ export type Question = {
   spec?: AnswerSpec
   parts?: QuestionPart[]
   solution?: string[]
+  ao?: AssessmentObjective
+  chapter?: number
 }
 
 export type ChapterContent = {
@@ -90,6 +96,23 @@ export type MockPaper = {
   focus: string
   durationMinutes: number
   questions: Question[]
+}
+
+export type ExamPaper = {
+  id: string
+  title: string
+  calculator: CalculatorMode
+  durationMinutes: number
+  questions: Question[]
+}
+
+export type ExamMock = {
+  id: string
+  title: string
+  subtitle: string
+  focus: string
+  stage: ExamStage
+  papers: ExamPaper[]
 }
 
 export type PracticeRecord = {
@@ -137,6 +160,40 @@ export type ChapterProgress = {
 
 export type MockHistoryItem = AttemptResult & { mockId: string }
 
+export type ExamPaperSit = {
+  paperId: string
+  title: string
+  calculator: CalculatorMode
+  result: AttemptResult
+  answers: Record<string, string>
+}
+
+export type ExamSit = {
+  mockId: string
+  title: string
+  at: string
+  marks: number
+  total: number
+  percent: number
+  band: GradeBand
+  durationSeconds: number
+  papers: ExamPaperSit[]
+}
+
+export type ExamDraft = {
+  mockId: string
+  paperId: string
+  startedAt: number
+  endsAt: number
+  pausedRemainingMs?: number
+  answers: Record<string, string>
+}
+
+export type ExamInProgress = {
+  mockId: string
+  papers: ExamPaperSit[]
+}
+
 export type ProgressState = {
   version: 1
   tier: Tier
@@ -150,6 +207,9 @@ export type ProgressState = {
     endsAt: number
     answers: Record<string, string>
   }
+  examDraft?: ExamDraft
+  examInProgress?: ExamInProgress
+  examSits: ExamSit[]
 }
 
 export function questionMarks(question: Question): number {

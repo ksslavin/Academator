@@ -3,6 +3,7 @@ import { chapter04 } from './chapters/ch04-fractions'
 import { chapter05 } from './chapters/ch05-percentages'
 import { chapter11 } from './chapters/ch11-linear-equations'
 import { chapter17 } from './chapters/ch17-ratio'
+import { EXAMS, getExam, listExams } from './exams'
 import { groupMockA } from './mocks/group-a'
 import type { ChapterContent, MockPaper } from '../lib/types'
 
@@ -29,11 +30,4 @@ export function getMock(id: string): MockPaper | undefined {
   return MOCKS.find((mock) => mock.id === id)
 }
 
-export const COMING_MOCKS = [
-  { id: 'year-11', title: 'Year 11 mock', note: 'Full mixed paper — later wave' },
-  { id: 'november', title: 'November mock', note: 'Resit-style paper — later wave' },
-  { id: 'march', title: 'March mock', note: 'Pre-summer paper — later wave' },
-  { id: 'full-gcse', title: 'Full GCSE mock', note: 'Three-paper set — later wave' },
-] as const
-
-export { CHAPTERS }
+export { EXAMS, getExam, listExams, CHAPTERS }
